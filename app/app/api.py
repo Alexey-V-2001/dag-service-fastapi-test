@@ -6,7 +6,8 @@ from app.schemas import (
     GraphCreateResponse, 
     GraphRead, 
     AdjacencyList, 
-    ErrorResponse
+    ErrorResponse,
+    HTTPValidationError
 )
 from app.services import (
     create_graph, 
@@ -25,7 +26,7 @@ router = APIRouter(tags=["Graph Operations"])
     status_code=status.HTTP_201_CREATED,
     responses={
         400: {"model": ErrorResponse, "description": "Graph creation error"},
-        422: {"description": "Input validation error"}
+        422: {"model": HTTPValidationError, "description": "Input validation error"}
     }
 )
 def create_graph_endpoint(
@@ -55,7 +56,7 @@ def create_graph_endpoint(
     response_model=GraphRead,
     responses={
         404: {"model": ErrorResponse, "description": "Graph not found"},
-        422: {"description": "Input validation error"}
+        422: {"model": HTTPValidationError, "description": "Input validation error"}
     }
 )
 def read_graph(
@@ -84,7 +85,7 @@ def read_graph(
     response_model=AdjacencyList,
     responses={
         404: {"model": ErrorResponse, "description": "Graph not found"},
-        422: {"description": "Input validation error"}
+        422: {"model": HTTPValidationError, "description": "Input validation error"}
     }
 )
 def get_adjacency_list_endpoint(
@@ -115,7 +116,7 @@ def get_adjacency_list_endpoint(
     response_model=AdjacencyList,
     responses={
         404: {"model": ErrorResponse, "description": "Graph not found"},
-        422: {"description": "Input validation error"}
+        422: {"model": HTTPValidationError, "description": "Input validation error"}
     }
 )
 def get_reverse_adjacency_list_endpoint(
@@ -146,7 +147,7 @@ def get_reverse_adjacency_list_endpoint(
     status_code=status.HTTP_204_NO_CONTENT,
     responses={
         404: {"model": ErrorResponse, "description": "Graph or node not found"},
-        422: {"description": "Input validation error"}
+        422: {"model": HTTPValidationError, "description": "Input validation error"}
     }
 )
 def delete_node_endpoint(

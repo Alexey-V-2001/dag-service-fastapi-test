@@ -33,7 +33,16 @@ if ! pip freeze | grep -q -f requirements.txt; then
     pip install --no-cache-dir -r requirements.txt -I
 fi
 
-python -m app.main
+if [[ "$START" == "1" ]]; then
+    echo "Running API..."
+    python -m app.main
+elif [[ "$START" == "2" ]]; then
+    echo "Running tests only..."
+    pytest tests/
+elif [[ "$START" == "3" ]]; then
+    echo "Running tests + code coverage report for app..."
+    pytest --cov=app tests/
+fi
 
 echo "Deactivating..."
 deactivate

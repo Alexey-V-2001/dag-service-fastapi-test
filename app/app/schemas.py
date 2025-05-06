@@ -18,7 +18,7 @@ class EdgeBase(BaseModel):
 
     @field_validator('source', 'target')
     def validate_node_names(cls, v):
-        if not re.match(r'^[a-zA-Z+]$', v):
+        if not re.match(r'^[a-zA-Z]+$', v):
             raise ValueError('Edge name must contain only latin letters.')
         return v
 
@@ -61,3 +61,13 @@ class AdjacencyList(BaseModel):
 
 class ErrorResponse(BaseModel):
     message: str
+
+
+class ValidationError(BaseModel):
+    loc: List[str]
+    msg: str
+    type: str
+
+
+class HTTPValidationError(BaseModel):
+    detail: List[ValidationError]
