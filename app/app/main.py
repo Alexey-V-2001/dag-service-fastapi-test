@@ -18,7 +18,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="DAG Service API",
     description="API",
-    version="0.0.1",
+    version="0.0.2",
     lifespan=lifespan
 )
 
