@@ -20,8 +20,8 @@ class Node(Base):
     graph_id = Column(Integer, ForeignKey("graphs.id", ondelete="CASCADE"))
 
     graph = relationship("Graph", back_populates="nodes")
-    outgoing_edges = relationship("Edge", back_populates="source", foreign_keys="Edge.source_id")
-    incoming_edges = relationship("Edge", back_populates="target", foreign_keys="Edge.target_id")
+    outgoing_edges = relationship("Edge", back_populates="source", foreign_keys="Edge.source_id", cascade="all, delete-orphan")
+    incoming_edges = relationship("Edge", back_populates="target", foreign_keys="Edge.target_id", cascade="all, delete-orphan")
 
     __table_args__ = (
         UniqueConstraint('name', 'graph_id', name='unique_node_name_per_graph'),

@@ -31,14 +31,14 @@ class GraphCreate(BaseModel):
 class NodeRead(NodeBase):
     id: int
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
 
 
 class EdgeRead(EdgeBase):
     id: int
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
 
 
@@ -47,7 +47,7 @@ class GraphRead(BaseModel):
     nodes: List[NodeRead]
     edges: List[EdgeRead]
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
 
 

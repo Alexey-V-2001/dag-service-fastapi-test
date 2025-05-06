@@ -59,10 +59,11 @@ def create_graph(db: Session, graph_data: GraphCreate) -> int:
                 graph_id=graph.id
             )
             db.add(edge)
+            db.flush()
         
         adjacency_list = get_adjacency_list(db, graph.id)
 
-        if is_acyclic(adjacency_list):
+        if not is_acyclic(adjacency_list):
             db.rollback()
             raise ValueError("Invalid graph structure: Cyclic dependencies detected (non-DAG)")
     
@@ -97,8 +98,8 @@ def get_graph(db: Session, graph_id: int) -> Optional[Dict]:
         "edges": [
             {
                 "id": edge.id,
-                "source": node_id_to_name[edge.source_id],
-                "target": node_id_to_name[edge.target_id]
+                "source": node_id_to_name.get(edge.source_id) if edge.source_id is not None else None,
+                "target": node_id_to_name.get(edge.target_id) if edge.target_id is not None else None
             }
             for edge in edges
         ]
@@ -142,17 +143,15 @@ def get_adjacency_list(db: Session, graph_id: int) -> Dict[str, List[str]]:
     Returns:
         Adjacency list representation {source: [targets]}
     """
-    nodes = db.query(Node).filter(Node.graph_id == graph_id).all()
-    edges = db.query(Edge).filter(Edge.graph_id == graph_id).all()
+    graph = db.query(Graph).filter(Graph.id == graph_id).first()
     
-    node_id_to_name = {node.id: node.name for node in nodes}
+    if not graph:
+        return None
     
-    adjacency_list = {node.name: [] for node in nodes}
+    adjacency_list = {node.name: [] for node in graph.nodes}
     
-    for edge in edges:
-        source_name = node_id_to_name[edge.source_id]
-        target_name = node_id_to_name[edge.target_id]
-        adjacency_list[source_name].append(target_name)
+    for edge in graph.edges:
+        adjacency_list[edge.source.name].append(edge.target.name)
     
     return adjacency_list
 
@@ -190,7 +189,7 @@ def is_acyclic(adjacency_list: Dict[str, List[str]]) -> bool:
         adjacency_list: Graph connection mapping
         
     Returns:
-        Cycle detection status (True = cyclic)
+        Acycle detection status (True = acyclic)
     """
     visited = set()
     recursion_stack = set()
@@ -210,4 +209,4 @@ def is_acyclic(adjacency_list: Dict[str, List[str]]) -> bool:
         recursion_stack.remove(current_node)
         return False
 
-    return any(dfs(node) for node in adjacency_list if node not in visited)
+    return not any(dfs(node) for node in adjacency_list if node not in visited)

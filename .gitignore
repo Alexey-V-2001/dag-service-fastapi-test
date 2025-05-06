@@ -1,5 +1,12 @@
+# IDE
+.vscode/
+
+# Configuration settings
 .env
 
 # Database
 app/alembic.ini
 docker/db/data/
+
+# Tests
+.coverage
