@@ -7,7 +7,7 @@ class Graph(Base):
     __tablename__ = "graphs"
 
     id = Column(Integer, primary_key=True, index=True)
-    created_at = Column(DateTime, default=datetime.now(timezone.utc).time())
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     nodes = relationship("Node", back_populates="graph", cascade="all, delete-orphan")
     edges = relationship("Edge", back_populates="graph", cascade="all, delete-orphan")
@@ -20,7 +20,7 @@ class Node(Base):
     graph_id = Column(Integer, ForeignKey("graphs.id", ondelete="CASCADE"))
 
     graph = relationship("Graph", back_populates="nodes")
-    outgoing_edges = relationship("Edge", back_populates="sourse", foreign_keys="Edge.source_id")
+    outgoing_edges = relationship("Edge", back_populates="source", foreign_keys="Edge.source_id")
     incoming_edges = relationship("Edge", back_populates="target", foreign_keys="Edge.target_id")
 
     __table_args__ = (

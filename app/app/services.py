@@ -30,7 +30,7 @@ def create_graph(db: Session, graph_data: GraphCreate) -> int:
         if node_data.name in nodes_dict:
             raise ValueError(f"Duplicate node name: {node_data.name}")
 
-        node = Node(name=node_data.name, grapgh_id=graph.id)
+        node = Node(name=node_data.name, graph_id=graph.id)
         db.add(node)
         db.flush()
         nodes_dict[node_data.name] = node
@@ -60,7 +60,7 @@ def create_graph(db: Session, graph_data: GraphCreate) -> int:
             )
             db.add(edge)
         
-        adjacency_list = get_adjacency_list(graph_data)
+        adjacency_list = get_adjacency_list(db, graph.id)
 
         if is_acyclic(adjacency_list):
             db.rollback()

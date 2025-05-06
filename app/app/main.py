@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 from app.database import create_tables
-# from app.api import router
+from app.api import router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -18,7 +18,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="DAG Service API",
     description="API",
-    version="0.0.2",
+    version="0.0.3",
     lifespan=lifespan
 )
 
@@ -30,7 +30,7 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-# app.include_router(router, prefix="/api/graph")
+app.include_router(router, prefix="/api/graph")
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
