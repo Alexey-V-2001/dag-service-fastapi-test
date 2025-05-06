@@ -1,0 +1,5 @@
+.env
+
+# Database
+app/alembic.ini
+docker/db/data/
